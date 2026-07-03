@@ -1,0 +1,51 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  @apply font-body text-ink;
+  background: radial-gradient(circle at 20% 20%, #2a4b49 0%, #14201f 70%);
+  background-attachment: fixed;
+  overflow-x: hidden;
+}
+
+.paper-texture {
+  background-image:
+    radial-gradient(rgba(42, 36, 28, 0.035) 1px, transparent 1px),
+    radial-gradient(rgba(42, 36, 28, 0.025) 1px, transparent 1px);
+  background-size:
+    3px 3px,
+    7px 7px;
+  background-position:
+    0 0,
+    2px 4px;
+}
+
+.tab-notch {
+  clip-path: polygon(0 12%, 100% 0, 100% 100%, 0 88%);
+}
+
+@keyframes drift {
+  0% {
+    transform: translateY(0) rotate(var(--r, 0deg));
+    opacity: 0.5;
+  }
+  50% {
+    transform: translateY(-18px) rotate(calc(var(--r, 0deg) + 4deg));
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(0) rotate(var(--r, 0deg));
+    opacity: 0.5;
+  }
+}
+
+.drift {
+  animation: drift 7s ease-in-out infinite;
+}
