@@ -94,6 +94,12 @@ export default function StayPage() {
         )}
       </div>
 
+      {trip.hotels.length > 0 && !trip.selectedHotel && (
+        <p className="text-center text-xs text-ink/50 mt-3">
+          Tap a hotel above to select it and continue.
+        </p>
+      )}
+
       <button
         disabled={!trip.selectedHotel}
         onClick={() => navigate("/plan")}
