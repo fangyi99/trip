@@ -52,10 +52,14 @@ export async function retrievePlace(mapboxId) {
   return { lng, lat };
 }
 
+export function isValidCoords(coords) {
+  return coords && Number.isFinite(coords.lng) && Number.isFinite(coords.lat);
+}
+
 /**
- * Finds candidate hotels around the destination, then ranks the closest
- * five to the *centroid* of the destination + the user's wishlist, so
- * the hotel is convenient to everything they actually plan to do.
+ * Finds candidate hotels around the destination, then returns the 5 closest
+ * to the *average* location of the wishlist (for ranking), each annotated
+ * with its individual distance to every wishlist item (for display).
  */
 export async function findTopHotels(destination, wishlist) {
   const anchor = centroid([destination, ...wishlist]);
@@ -66,14 +70,14 @@ export async function findTopHotels(destination, wishlist) {
     session_token: getSessionToken(),
     proximity: `${anchor.lng},${anchor.lat}`,
     poi_category: "lodging",
-    limit: "10",
+    limit: "6",
   });
   const res = await fetch(`${SEARCH_URL}/suggest?${params}`);
   if (!res.ok) throw new Error("Mapbox hotel search failed");
   const data = await res.json();
 
   const candidates = await Promise.all(
-    (data.suggestions ?? []).slice(0, 10).map(async (s) => {
+    (data.suggestions ?? []).slice(0, 6).map(async (s) => {
       const coords = await retrievePlace(s.mapbox_id);
       return {
         id: s.mapbox_id,
@@ -84,34 +88,60 @@ export async function findTopHotels(destination, wishlist) {
     }),
   );
 
-  const withDistance = await attachDistances(anchor, candidates);
-  return withDistance
-    .sort((a, b) => a.distanceMeters - b.distanceMeters)
-    .slice(0, 5);
+  const withDistances = await attachDistances(wishlist, candidates);
+
+  // rank by average distance across the wishlist, so the top 5 are
+  // genuinely the most convenient overall, not just closest to one spot
+  return withDistances
+    .map((hotel) => ({
+      ...hotel,
+      avgDistance: average(hotel.distances.map((d) => d.meters)),
+    }))
+    .sort((a, b) => a.avgDistance - b.avgDistance)
+    .slice(0, 3);
 }
 
-/** Batches a Matrix API call so we get all distances in a single request. */
-async function attachDistances(origin, places) {
-  if (places.length === 0) return [];
+/**
+ * One Matrix API call per hotel batch, each hotel as a source and every
+ * wishlist item as a destination - gives a full distance grid in one request.
+ */
+async function attachDistances(wishlist, hotels) {
+  if (hotels.length === 0 || wishlist.length === 0) {
+    return hotels.map((h) => ({ ...h, distances: [] }));
+  }
+
   const coordString = [
-    `${origin.lng},${origin.lat}`,
-    ...places.map((p) => `${p.lng},${p.lat}`),
+    ...hotels.map((h) => `${h.lng},${h.lat}`),
+    ...wishlist.map((w) => `${w.lng},${w.lat}`),
   ].join(";");
+
+  const sources = hotels.map((_, i) => i).join(";");
+  const destinations = wishlist.map((_, i) => hotels.length + i).join(";");
 
   const params = new URLSearchParams({
     access_token: TOKEN,
-    sources: "0",
+    sources,
+    destinations,
     annotations: "distance",
   });
   const res = await fetch(`${MATRIX_URL}/${coordString}?${params}`);
   if (!res.ok) throw new Error("Mapbox matrix request failed");
   const data = await res.json();
-  const distances = data.distances?.[0] ?? [];
 
-  return places.map((place, i) => ({
-    ...place,
-    distanceMeters: distances[i + 1] ?? null,
+  return hotels.map((hotel, hotelIndex) => ({
+    ...hotel,
+    distances: wishlist.map((place, placeIndex) => ({
+      name: place.name,
+      meters: data.distances?.[hotelIndex]?.[placeIndex] ?? null,
+    })),
   }));
+}
+
+function average(numbers) {
+  const valid = numbers.filter((n) => n != null);
+  return valid.length
+    ? valid.reduce((sum, n) => sum + n, 0) / valid.length
+    : Infinity;
 }
 
 function centroid(points) {

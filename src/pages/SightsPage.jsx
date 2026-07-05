@@ -1,7 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTrip } from "../context/TripContext.jsx";
-import { searchPlaces, retrievePlace } from "../services/mapbox.js";
+import {
+  searchPlaces,
+  retrievePlace,
+  isValidCoords,
+} from "../services/mapbox.js";
 
 export default function SightsPage() {
   const { trip, addWishlistItem, removeWishlistItem, toggleWishlistItem } =
@@ -10,6 +14,7 @@ export default function SightsPage() {
 
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
+  const [addError, setAddError] = useState(null);
 
   async function handleQueryChange(value) {
     setQuery(value);
@@ -25,15 +30,29 @@ export default function SightsPage() {
   }
 
   async function handleAdd(suggestion) {
-    const coords = await retrievePlace(suggestion.id);
-    addWishlistItem({
-      id: suggestion.id,
-      name: suggestion.name,
-      category: suggestion.category,
-      ...coords,
-    });
-    setQuery("");
-    setSuggestions([]);
+    try {
+      const coords = await retrievePlace(suggestion.id);
+      if (!isValidCoords(coords)) {
+        setAddError(
+          `Couldn't add "${suggestion.name}" — no location data available for this place.`,
+        );
+        return;
+      }
+      addWishlistItem({
+        id: suggestion.id,
+        name: suggestion.name,
+        category: suggestion.category,
+        ...coords,
+      });
+      setQuery("");
+      setSuggestions([]);
+      setAddError(null);
+    } catch (e) {
+      console.error("Failed to add place:", e);
+      setAddError(
+        `Couldn't add "${suggestion.name}" — no location data available for this place.`,
+      );
+    }
   }
 
   if (!trip.destination) {
@@ -53,6 +72,7 @@ export default function SightsPage() {
             placeholder="Search attractions or restaurants"
             className="w-full bg-white/70 border border-ink/15 rounded-lg px-4 py-3 font-body focus:outline-none focus:ring-2 focus:ring-cover"
           />
+          {addError && <p className="text-seal text-xs mt-2">{addError}</p>}
           {suggestions.length > 0 && (
             <ul className="absolute top-full left-0 right-0 z-20 mt-2 border border-ink/10 rounded-lg divide-y divide-ink/10 bg-white shadow-lg overflow-hidden">
               {suggestions.map((s) => (

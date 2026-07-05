@@ -1,7 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTrip } from "../context/TripContext.jsx";
-import { searchPlaces, retrievePlace } from "../services/mapbox.js";
+import {
+  searchPlaces,
+  retrievePlace,
+  isValidCoords,
+} from "../services/mapbox.js";
 import { BUDGETS, TRAVEL_STYLES } from "../data/tripOptions.js";
 
 export default function JourneyPage() {
@@ -10,6 +14,7 @@ export default function JourneyPage() {
 
   const [query, setQuery] = useState(trip.destination?.name ?? "");
   const [suggestions, setSuggestions] = useState([]);
+  const [selectError, setSelectError] = useState(null);
 
   async function handleQueryChange(value) {
     setQuery(value);
@@ -18,16 +23,30 @@ export default function JourneyPage() {
   }
 
   async function handleSelectDestination(suggestion) {
-    const coords = await retrievePlace(suggestion.id);
-    updateTrip({
-      destination: {
-        name: suggestion.name,
-        countryCode: suggestion.countryCode,
-        ...coords,
-      },
-    });
-    setQuery(suggestion.name);
-    setSuggestions([]);
+    try {
+      const coords = await retrievePlace(suggestion.id);
+      if (!isValidCoords(coords)) {
+        setSelectError(
+          `Couldn't get location data for "${suggestion.name}". Try another country.`,
+        );
+        return;
+      }
+      updateTrip({
+        destination: {
+          name: suggestion.name,
+          countryCode: suggestion.countryCode,
+          ...coords,
+        },
+      });
+      setQuery(suggestion.name);
+      setSuggestions([]);
+      setSelectError(null);
+    } catch (e) {
+      console.error("Failed to select destination:", e);
+      setSelectError(
+        `Couldn't get location data for "${suggestion.name}". Try another country.`,
+      );
+    }
   }
 
   const canContinue = trip.destination && trip.days > 0;
@@ -45,6 +64,9 @@ export default function JourneyPage() {
             placeholder="Search a country"
             className="w-full bg-white/70 border border-ink/15 rounded-lg px-4 py-3 font-body focus:outline-none focus:ring-2 focus:ring-cover"
           />
+          {selectError && (
+            <p className="text-seal text-xs mt-2">{selectError}</p>
+          )}
           {suggestions.length > 0 && (
             <ul className="absolute top-full left-0 right-0 z-20 mt-2 border border-ink/10 rounded-lg divide-y divide-ink/10 bg-white shadow-lg overflow-hidden">
               {suggestions.map((s) => (
