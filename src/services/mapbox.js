@@ -7,7 +7,7 @@ const MATRIX_URL = "https://api.mapbox.com/directions-matrix/v1/mapbox/driving";
  * (attractions/restaurants) chapters. `proximity` biases results toward
  * an already-picked destination once one exists.
  */
-export async function searchPlaces(query, proximity) {
+export async function searchPlaces(query, proximity, types, countryCode) {
   if (!query) return [];
   const params = new URLSearchParams({
     q: query,
@@ -16,6 +16,8 @@ export async function searchPlaces(query, proximity) {
     limit: "6",
   });
   if (proximity) params.set("proximity", `${proximity.lng},${proximity.lat}`);
+  if (types) params.set("types", types);
+  if (countryCode) params.set("country", countryCode);
 
   const res = await fetch(`${SEARCH_URL}/suggest?${params}`);
   if (!res.ok) throw new Error("Mapbox search failed");
@@ -26,6 +28,7 @@ export async function searchPlaces(query, proximity) {
     name: s.name,
     category: s.poi_category?.[0] ?? s.feature_type,
     address: s.full_address ?? s.place_formatted,
+    countryCode: s.context?.country?.country_code,
   }));
 }
 
@@ -38,7 +41,13 @@ export async function retrievePlace(mapboxId) {
   const res = await fetch(`${SEARCH_URL}/retrieve/${mapboxId}?${params}`);
   if (!res.ok) throw new Error("Mapbox retrieve failed");
   const data = await res.json();
+
   const feature = data.features?.[0];
+  if (!feature) {
+    console.error("Mapbox retrieve returned no feature:", data);
+    throw new Error("No location data returned for this place");
+  }
+
   const [lng, lat] = feature.geometry.coordinates;
   return { lng, lat };
 }

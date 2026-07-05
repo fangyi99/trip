@@ -14,12 +14,18 @@ export default function JourneyPage() {
   async function handleQueryChange(value) {
     setQuery(value);
     if (value.length < 3) return setSuggestions([]);
-    setSuggestions(await searchPlaces(value));
+    setSuggestions(await searchPlaces(value, undefined, "country"));
   }
 
   async function handleSelectDestination(suggestion) {
     const coords = await retrievePlace(suggestion.id);
-    updateTrip({ destination: { name: suggestion.name, ...coords } });
+    updateTrip({
+      destination: {
+        name: suggestion.name,
+        countryCode: suggestion.countryCode,
+        ...coords,
+      },
+    });
     setQuery(suggestion.name);
     setSuggestions([]);
   }
@@ -27,61 +33,65 @@ export default function JourneyPage() {
   const canContinue = trip.destination && trip.days > 0;
 
   return (
-    <div className="space-y-6">
-      <section>
-        <label className="block font-mono text-xs uppercase tracking-wider text-ink/60 mb-2">
-          Where to?
-        </label>
-        <input
-          value={query}
-          onChange={(e) => handleQueryChange(e.target.value)}
-          placeholder="Search a city or region"
-          className="w-full bg-white/70 border border-ink/15 rounded-lg px-4 py-3 font-body focus:outline-none focus:ring-2 focus:ring-cover"
+    <div className="h-full flex flex-col">
+      <div className="flex-1 overflow-y-auto space-y-6 pr-1">
+        <section className="relative">
+          <label className="block font-mono text-xs uppercase tracking-wider text-ink/60 mb-2">
+            Where to?
+          </label>
+          <input
+            value={query}
+            onChange={(e) => handleQueryChange(e.target.value)}
+            placeholder="Search a country"
+            className="w-full bg-white/70 border border-ink/15 rounded-lg px-4 py-3 font-body focus:outline-none focus:ring-2 focus:ring-cover"
+          />
+          {suggestions.length > 0 && (
+            <ul className="absolute top-full left-0 right-0 z-20 mt-2 border border-ink/10 rounded-lg divide-y divide-ink/10 bg-white shadow-lg overflow-hidden">
+              {suggestions.map((s) => (
+                <li key={s.id}>
+                  <button
+                    onClick={() => handleSelectDestination(s)}
+                    className="w-full text-left px-4 py-2 hover:bg-paper-shadow"
+                  >
+                    <span className="font-medium">{s.name}</span>
+                    <span className="block text-xs text-ink/50">
+                      {s.address}
+                    </span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+
+        <section>
+          <label className="block font-mono text-xs uppercase tracking-wider text-ink/60 mb-2">
+            How many days?
+          </label>
+          <input
+            type="number"
+            min={1}
+            max={30}
+            value={trip.days}
+            onChange={(e) => updateTrip({ days: Number(e.target.value) })}
+            className="w-24 bg-white/70 border border-ink/15 rounded-lg px-4 py-3 font-body focus:outline-none focus:ring-2 focus:ring-cover"
+          />
+        </section>
+
+        <OptionGroup
+          label="Budget"
+          options={BUDGETS}
+          value={trip.budget}
+          onChange={(value) => updateTrip({ budget: value })}
         />
-        {suggestions.length > 0 && (
-          <ul className="mt-2 border border-ink/10 rounded-lg divide-y divide-ink/10 bg-white/90 overflow-hidden">
-            {suggestions.map((s) => (
-              <li key={s.id}>
-                <button
-                  onClick={() => handleSelectDestination(s)}
-                  className="w-full text-left px-4 py-2 hover:bg-paper-shadow"
-                >
-                  <span className="font-medium">{s.name}</span>
-                  <span className="block text-xs text-ink/50">{s.address}</span>
-                </button>
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
 
-      <section>
-        <label className="block font-mono text-xs uppercase tracking-wider text-ink/60 mb-2">
-          How many days?
-        </label>
-        <input
-          type="number"
-          min={1}
-          max={30}
-          value={trip.days}
-          onChange={(e) => updateTrip({ days: Number(e.target.value) })}
-          className="w-24 bg-white/70 border border-ink/15 rounded-lg px-4 py-3 font-body focus:outline-none focus:ring-2 focus:ring-cover"
+        <OptionGroup
+          label="Travel style"
+          options={TRAVEL_STYLES}
+          value={trip.travelStyle}
+          onChange={(value) => updateTrip({ travelStyle: value })}
         />
-      </section>
-
-      <OptionGroup
-        label="Budget"
-        options={BUDGETS}
-        value={trip.budget}
-        onChange={(value) => updateTrip({ budget: value })}
-      />
-
-      <OptionGroup
-        label="Travel style"
-        options={TRAVEL_STYLES}
-        value={trip.travelStyle}
-        onChange={(value) => updateTrip({ travelStyle: value })}
-      />
+      </div>
 
       <button
         disabled={!canContinue}

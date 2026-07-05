@@ -12,7 +12,7 @@ export default function BookShell() {
     <div className="h-screen overflow-hidden flex items-center justify-center lg:px-6 lg:py-10">
       <Backdrop />
 
-      <div className="relative w-full h-full lg:h-auto lg:max-h-[85vh] lg:max-w-[430px] flex flex-col">
+      <div className="relative w-full h-full lg:h-[85vh] lg:max-w-[430px] flex flex-col">
         <div className="hidden lg:block absolute -left-2 top-3 bottom-3 w-2 rounded-l-md bg-cover-dark" />
 
         <div className="relative bg-paper lg:rounded-r-2xl lg:rounded-l-sm lg:shadow-book overflow-hidden flex-1 flex flex-col">
@@ -23,7 +23,7 @@ export default function BookShell() {
           </header>
 
           <div className="flex-1 flex overflow-hidden">
-            <main className="paper-texture px-6 py-6 flex-1 overflow-y-auto">
+            <main className="paper-texture px-6 py-6 flex-1 overflow-hidden flex flex-col">
               {isDesktop ? (
                 <AnimatePresence mode="wait">
                   <motion.div
@@ -32,6 +32,7 @@ export default function BookShell() {
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: -24 }}
                     transition={{ duration: 0.25, ease: "easeOut" }}
+                    className="h-full"
                   >
                     <Outlet />
                   </motion.div>

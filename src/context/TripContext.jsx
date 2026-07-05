@@ -32,12 +32,23 @@ export function TripProvider({ children }) {
   const updateTrip = (patch) => setTrip((prev) => ({ ...prev, ...patch }));
 
   const addWishlistItem = (item) =>
-    setTrip((prev) => ({ ...prev, wishlist: [...prev.wishlist, item] }));
+    setTrip((prev) => ({
+      ...prev,
+      wishlist: [...prev.wishlist, { ...item, included: true }],
+    }));
 
   const removeWishlistItem = (id) =>
     setTrip((prev) => ({
       ...prev,
       wishlist: prev.wishlist.filter((item) => item.id !== id),
+    }));
+
+  const toggleWishlistItem = (id) =>
+    setTrip((prev) => ({
+      ...prev,
+      wishlist: prev.wishlist.map((item) =>
+        item.id === id ? { ...item, included: !item.included } : item,
+      ),
     }));
 
   const resetTrip = () => setTrip(emptyTrip);
@@ -49,6 +60,7 @@ export function TripProvider({ children }) {
         updateTrip,
         addWishlistItem,
         removeWishlistItem,
+        toggleWishlistItem,
         resetTrip,
       }}
     >
