@@ -6,6 +6,7 @@ export default function PlanPage() {
   const { trip, updateTrip } = useTrip();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [copied, setCopied] = useState(false);
 
   async function handleGenerate() {
     setLoading(true);
@@ -20,6 +21,32 @@ export default function PlanPage() {
       );
     } finally {
       setLoading(false);
+    }
+  }
+
+  function formatItineraryAsText(trip) {
+    const lines = [`${trip.destination.name} — ${trip.days} day itinerary`, ""];
+
+    trip.itinerary.days.forEach((day) => {
+      lines.push(`Day ${day.day}: ${day.summary}`);
+      day.blocks.forEach((block) => {
+        lines.push(
+          `  ${block.time}  ${block.title}${block.notes ? ` — ${block.notes}` : ""}`,
+        );
+      });
+      lines.push("");
+    });
+
+    return lines.join("\n");
+  }
+
+  async function handleCopy() {
+    try {
+      await navigator.clipboard.writeText(formatItineraryAsText(trip));
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (e) {
+      console.error("Copy failed:", e);
     }
   }
 
@@ -121,6 +148,15 @@ export default function PlanPage() {
           </div>
         )}
       </div>
+
+      {trip.itinerary && (
+        <button
+          onClick={handleCopy}
+          className="no-print mt-4 shrink-0 w-full border border-cover text-cover font-display text-lg rounded-lg py-3"
+        >
+          {copied ? "Copied!" : "Copy as text"}
+        </button>
+      )}
 
       {trip.itinerary && (
         <button

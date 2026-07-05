@@ -72,7 +72,7 @@ export default function StayPage() {
                     onClick={(e) => e.stopPropagation()}
                     className="text-xs font-mono uppercase tracking-wide text-seal shrink-0 hover:underline"
                   >
-                    View price ↗
+                    View details ↗
                   </a>
                 </div>
 
