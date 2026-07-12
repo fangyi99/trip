@@ -3,6 +3,8 @@ import travellerAnimation from "../../assets/traveller.json";
 
 const Lottie = LottieImport.default || LottieImport;
 
+// Desktop-only decorative backdrop - hidden entirely on mobile
+
 export default function Backdrop() {
   return (
     <div

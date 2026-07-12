@@ -1,16 +1,68 @@
-# React + Vite
+Trace
+An elegant, mobile-first web application designed to simplify travel planning. By combining smart accommodation recommendations with AI-driven itinerary generation, it transforms chaotic planning process into a beautifyl, cohesive journey.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Tech Stack
+Frontend
 
-Currently, two official plugins are available:
+<p align="justify">
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+# Trace
 
-## React Compiler
+An elegant, mobile-first web application designed to simplify travel planning. By combining smart accommodation recommendations with AI-driven itinerary generation, it transforms chaotic planning process into a beautifyl, cohesive journey.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+<p align="center">
+<a href="https://ibb.co/rZx9ffD"><img src="https://i.ibb.co/8jrk441/Invoicely.png" alt="Invoicely" border="0"></a>
+</p>
 
-## Expanding the ESLint configuration
+## Getting Started
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### Prerequisites
+
+Before running the project locally, ensure you have the following API keys ready:
+
+- Mapbox API Key
+- OpenAI API Key
+
+### Installation
+
+1. Clone the repository:
+   `git clone https://github.com/fangyi99/trip.git`
+
+2. Install dependencies:
+   `npm install`
+
+3. Create a .env file in the root directory and add your environment variables:
+
+````REACT_APP_MAPBOX_TOKEN=your_mapbox_token_here
+REACT_APP_AI_API_KEY=your_ai_api_key_here```
+
+
+Run the following commands from your terminal:
+1. ```git clone https://github.com/fangyi99/invoice_generator.git``` to clone this repository.
+2. ```flutter pub get``` in the project root directory to install all required dependencies.
+
+## Screenshots
+<table width="100%">
+  <tbody>
+    <tr>
+      <td width="1%"><a href="https://ibb.co/wRzGVrQ"><img src="https://i.ibb.co/jTr0mZw/Home.png" alt="Home" border="0"></a></td>
+       <td width="1%"><a href="https://ibb.co/kxg8Hsq"><img src="https://i.ibb.co/dr02Wwk/Database.png" alt="Database" border="0"></a></td>
+       <td width="1%"><a href="https://ibb.co/41nmX05"><img src="https://i.ibb.co/xFtCBrR/Form.png" alt="Form" border="0"></a></td>
+       <td width="1%"><a href="https://ibb.co/2dbXTnp"><img src="https://i.ibb.co/YhrvxRV/PDF.png" alt="PDF" border="0"></a></td>
+    </tr>
+  </tbody>
+</table>
+
+## Tech Stack
+- [React](https://docs.flutter.dev/)
+- [Mapbox](https://pub.dev/packages/hive)
+- [OpenAI API]()
+
+## References
+- [Hive Tutorial](https://www.youtube.com/watch?v=w8cZKm9s228&t=20s&ab_channel=HeyFlutter)
+- [Create PDF Tutorial](https://www.youtube.com/watch?v=z_5xkhEkc5Y&t=856s&ab_channel=HeyFlutter)
+- [PDF Viewer Tutorial](https://www.youtube.com/watch?v=uizZbJWziEg&t=894s&ab_channel=HeyFlutter)
+- [Share Files Tutorial](https://www.youtube.com/watch?v=-PmUFbbA-Fs&t=0s&ab_channel=HeyFlutter)
+
+</p>
+````

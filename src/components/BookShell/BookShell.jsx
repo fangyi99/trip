@@ -4,6 +4,8 @@ import TabIndex from "./TabIndex.jsx";
 import Backdrop from "./Backdrop.jsx";
 import { useMediaQuery } from "../../hooks/useMediaQuery.js";
 
+// Desktop view: floating card + backdrop animation + page-turn transition
+// Mobile view: full-bleed
 export default function BookShell() {
   const location = useLocation();
   const isDesktop = useMediaQuery("(min-width: 1024px)");

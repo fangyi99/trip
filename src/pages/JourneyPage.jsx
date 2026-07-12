@@ -8,6 +8,7 @@ import {
 } from "../services/mapbox.js";
 import { BUDGETS, TRAVEL_STYLES } from "../data/tripOptions.js";
 
+// Step 1: Inputs destination (country only), trip length, budget and pace
 export default function JourneyPage() {
   const { trip, updateTrip } = useTrip();
   const navigate = useNavigate();
@@ -16,6 +17,8 @@ export default function JourneyPage() {
   const [suggestions, setSuggestions] = useState([]);
   const [selectError, setSelectError] = useState(null);
 
+  // Debounced by length rather than timer - only searches once the user
+  // has typed enough for reseults to be meaningful
   async function handleQueryChange(value) {
     setQuery(value);
     if (value.length < 3) return setSuggestions([]);

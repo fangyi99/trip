@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { useTrip } from "../context/TripContext.jsx";
 import { findTopHotels, externalBookingLink } from "../services/mapbox.js";
 
+// Step 3: Suggest hotels based on proximity to each wishlist item from prev step
+// Selected hotel will be used for planning in the next step
 export default function StayPage() {
   const { trip, updateTrip } = useTrip();
   const navigate = useNavigate();

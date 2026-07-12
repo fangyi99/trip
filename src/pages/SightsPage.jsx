@@ -7,6 +7,8 @@ import {
   isValidCoords,
 } from "../services/mapbox.js";
 
+// Step 2: Build wishlist of attractions/restuarants, scoped to
+// country picked from previous step
 export default function SightsPage() {
   const { trip, addWishlistItem, removeWishlistItem, toggleWishlistItem } =
     useTrip();

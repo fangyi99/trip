@@ -8,9 +8,9 @@ const emptyTrip = {
   budget: "mid", // "budget" | "mid" | "luxury"
   travelStyle: "balanced", // "relaxed" | "balanced" | "packed"
   wishlist: [], // [{ id, name, category, lng, lat }]
-  hotels: [], // populated by the Stay chapter search
+  hotels: [],
   selectedHotel: null,
-  itinerary: null, // AI-generated plan, once created
+  itinerary: null,
 };
 
 const TripContext = createContext(null);

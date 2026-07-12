@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useTrip } from "../context/TripContext.jsx";
 import { generateItinerary } from "../services/ai.js";
 
+// Step 4: Generates day-by-day plan from the selected hotel + wishlist using AI
 export default function PlanPage() {
   const { trip, updateTrip } = useTrip();
   const [loading, setLoading] = useState(false);
@@ -58,6 +59,8 @@ export default function PlanPage() {
     );
   }
 
+  // Compares what the current itinerary was generated from against trip's current state
+  // NEVER auto-generates unless clicked manually
   const isStale =
     trip.itinerary &&
     (trip.itinerary.generatedFrom?.hotelId !== trip.selectedHotel?.id ||

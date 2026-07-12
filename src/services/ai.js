@@ -1,8 +1,3 @@
-/**
- * Itinerary generation must go through your own backend (see README ->
- * "Backend for AI calls"). Never call the OpenAI API directly from the
- * browser with a real API key - it would be exposed to every visitor.
- */
 export async function generateItinerary(trip) {
   const res = await fetch("/api/itinerary", {
     method: "POST",

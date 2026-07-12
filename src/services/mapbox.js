@@ -3,9 +3,11 @@ const SEARCH_URL = "https://api.mapbox.com/search/searchbox/v1";
 const MATRIX_URL = "https://api.mapbox.com/directions-matrix/v1/mapbox/driving";
 
 /**
- * Free-text search used on both the Journey (destination) and Sights
- * (attractions/restaurants) chapters. `proximity` biases results toward
- * an already-picked destination once one exists.
+ * Free-text place search
+ * @param {string} query - user input
+ * @param {{lng,lat}} [proximity] - biases results toward this point
+ * @param {string} [types] - restricts result types
+ * @param {string} [countryCode] - restricts results inside one country
  */
 export async function searchPlaces(query, proximity, types, countryCode) {
   if (!query) return [];
@@ -32,7 +34,7 @@ export async function searchPlaces(query, proximity, types, countryCode) {
   }));
 }
 
-/** Resolves a suggestion id (from searchPlaces) into real coordinates. */
+/** Get selected place's coordinates. */
 export async function retrievePlace(mapboxId) {
   const params = new URLSearchParams({
     access_token: TOKEN,
@@ -57,9 +59,9 @@ export function isValidCoords(coords) {
 }
 
 /**
- * Finds candidate hotels around the destination, then returns the 5 closest
- * to the *average* location of the wishlist (for ranking), each annotated
- * with its individual distance to every wishlist item (for display).
+ * Finds the 3 hotels most convenient to the destination + the user's
+ * included wishlist items, each annotated with its distance to every
+ * wishlist item individually
  */
 export async function findTopHotels(destination, wishlist) {
   const anchor = centroid([destination, ...wishlist]);
@@ -90,7 +92,7 @@ export async function findTopHotels(destination, wishlist) {
 
   const withDistances = await attachDistances(wishlist, candidates);
 
-  // rank by average distance across the wishlist, so the top 5 are
+  // Rank by average distance across the wishlist, so the top 3 are
   // genuinely the most convenient overall, not just closest to one spot
   return withDistances
     .map((hotel) => ({
@@ -101,10 +103,6 @@ export async function findTopHotels(destination, wishlist) {
     .slice(0, 3);
 }
 
-/**
- * One Matrix API call per hotel batch, each hotel as a source and every
- * wishlist item as a destination - gives a full distance grid in one request.
- */
 async function attachDistances(wishlist, hotels) {
   if (hotels.length === 0 || wishlist.length === 0) {
     return hotels.map((h) => ({ ...h, distances: [] }));
@@ -151,14 +149,12 @@ function centroid(points) {
   return { lng, lat };
 }
 
-/** Mapbox bills search sessions, not individual keystrokes - reuse one id per search flow. */
 let sessionToken;
 function getSessionToken() {
   if (!sessionToken) sessionToken = crypto.randomUUID();
   return sessionToken;
 }
 
-/** Builds a "search this hotel" link since free tiers don't expose pricing. */
 export function externalBookingLink(hotelName, address) {
   const query = encodeURIComponent(`${hotelName} ${address ?? ""}`);
   return `https://www.google.com/travel/search?q=${query}`;
