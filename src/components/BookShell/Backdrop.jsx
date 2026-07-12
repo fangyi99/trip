@@ -1,37 +1,32 @@
-const SCRAPS = [
-  { top: "12%", left: "8%", size: 26, rotate: -12, delay: "0s" },
-  { top: "68%", left: "14%", size: 18, rotate: 20, delay: "1.2s" },
-  { top: "30%", left: "84%", size: 22, rotate: 8, delay: "0.6s" },
-  { top: "75%", left: "80%", size: 30, rotate: -18, delay: "1.8s" },
-  { top: "48%", left: "6%", size: 14, rotate: 30, delay: "2.4s" },
-];
+import LottieImport from "lottie-react";
+import travellerAnimation from "../../assets/traveller.json";
 
-/** Small drifting paper-plane shapes that fill the desk around the book on desktop. */
+const Lottie = LottieImport.default || LottieImport;
+
 export default function Backdrop() {
   return (
     <div
-      className="hidden lg:block fixed inset-0 -z-10 overflow-hidden"
+      className="hidden lg:block fixed inset-0 -z-10 overflow-hidden atlas-grid vignette"
       aria-hidden="true"
     >
-      {SCRAPS.map((s, i) => (
-        <svg
-          key={i}
-          className="drift absolute text-gold/25"
-          style={{
-            top: s.top,
-            left: s.left,
-            width: s.size,
-            height: s.size,
-            animationDelay: s.delay,
-            "--r": `${s.rotate}deg`,
-            transform: `rotate(${s.rotate}deg)`,
-          }}
-          viewBox="0 0 24 24"
-          fill="currentColor"
-        >
-          <path d="M2 21L23 12L2 3V10L17 12L2 14V21Z" />
-        </svg>
-      ))}
+      <svg
+        className="absolute inset-0 w-full h-full"
+        viewBox="0 0 1000 1000"
+        preserveAspectRatio="none"
+      >
+        <path
+          className="flight-path"
+          d="M 100 600 Q 400 200 920 400"
+          fill="none"
+          stroke="#B8935A"
+          strokeWidth="2"
+          strokeLinecap="round"
+        />
+      </svg>
+
+      <div className="absolute bottom-10 left-10 w-48">
+        <Lottie animationData={travellerAnimation} loop autoplay />
+      </div>
     </div>
   );
 }

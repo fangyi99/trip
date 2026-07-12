@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "framer-motion": "^12.42.2",
+    "lottie-react": "^2.4.1",
     "openai": "^6.45.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",

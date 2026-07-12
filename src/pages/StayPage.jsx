@@ -51,20 +51,20 @@ export default function StayPage() {
                   "border rounded-lg px-4 py-3 cursor-pointer transition-colors",
                   trip.selectedHotel?.id === hotel.id
                     ? "border-cover bg-cover/5"
-                    : "border-ink/10 bg-white/70 hover:border-cover/40",
+                    : index === 0
+                      ? "border-gold"
+                      : "border-ink/10 bg-white/70 hover:border-cover/40",
                 ].join(" ")}
                 onClick={() => updateTrip({ selectedHotel: hotel })}
               >
+                {index === 0 && (
+                  <span className="inline-block bg-gold text-cover-dark text-[10px] font-semibold uppercase tracking-wide px-2 py-0.5 rounded mb-1.5">
+                    Best match
+                  </span>
+                )}
+
                 <div className="flex items-start justify-between gap-3">
-                  <div className="flex items-start gap-3">
-                    <span className="font-display text-lg text-gold shrink-0 w-6 text-center">
-                      {index + 1}
-                    </span>
-                    <div>
-                      <p className="font-medium">{hotel.name}</p>
-                      <p className="text-xs text-ink/50">{hotel.address}</p>
-                    </div>
-                  </div>
+                  <p className="font-medium">{hotel.name}</p>
                   <a
                     href={externalBookingLink(hotel.name, hotel.address)}
                     target="_blank"
@@ -72,12 +72,13 @@ export default function StayPage() {
                     onClick={(e) => e.stopPropagation()}
                     className="text-xs font-mono uppercase tracking-wide text-seal shrink-0 hover:underline"
                   >
-                    View details ↗
+                    Details ↗
                   </a>
                 </div>
+                <p className="text-xs text-ink/50">{hotel.address}</p>
 
                 {hotel.distances?.length > 0 && (
-                  <ul className="mt-2 pt-2 border-t border-ink/10 space-y-1 pl-9">
+                  <ul className="mt-2 pt-2 border-t border-ink/10 space-y-1">
                     {hotel.distances.map((d) => (
                       <li key={d.name} className="flex justify-between text-xs">
                         <span className="text-ink/60">{d.name}</span>

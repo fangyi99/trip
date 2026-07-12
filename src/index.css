@@ -8,9 +8,18 @@ body,
   height: 100%;
 }
 
+:root {
+  --backdrop-start: #1e2a4a;
+  --backdrop-end: #131c33;
+}
+
 body {
   @apply font-body text-ink;
-  background: radial-gradient(circle at 20% 20%, #2a4b49 0%, #14201f 70%);
+  background: radial-gradient(
+    circle at 20% 20%,
+    var(--backdrop-start) 0%,
+    var(--backdrop-end) 70%
+  );
   background-attachment: fixed;
   overflow-x: hidden;
 }
@@ -27,8 +36,8 @@ body {
     2px 4px;
 }
 
-.tab-notch {
-  clip-path: polygon(0 12%, 100% 0, 100% 100%, 0 88%);
+.tab-pennant {
+  clip-path: polygon(35% 0, 100% 0, 100% 100%, 35% 100%, 0 50%);
 }
 
 @keyframes drift {
@@ -48,4 +57,36 @@ body {
 
 .drift {
   animation: drift 7s ease-in-out infinite;
+}
+
+.atlas-grid {
+  background-image:
+    linear-gradient(rgba(184, 147, 90, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(184, 147, 90, 0.08) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+.vignette::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -10;
+  pointer-events: none;
+  background: radial-gradient(
+    circle at 50% 50%,
+    transparent 40%,
+    rgba(19, 28, 51, 0.35) 100%
+  );
+}
+
+@keyframes drawPath {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.flight-path {
+  stroke-dasharray: 6 10;
+  stroke-dashoffset: 200;
+  animation: drawPath 8s linear infinite;
 }

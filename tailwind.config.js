@@ -4,13 +4,13 @@ export default {
   theme: {
     extend: {
       colors: {
-        paper: "#FBF6EC",
-        "paper-shadow": "#E8DCC4",
-        cover: "#1F3B3A",
-        "cover-dark": "#152827",
-        gold: "#C9A24B",
-        ink: "#2A241C",
-        seal: "#A13D3D",
+        paper: "#F8F3E7",
+        "paper-shadow": "#E5DCC8",
+        cover: "#1E2A4A",
+        "cover-dark": "#131C33",
+        gold: "#B8935A",
+        ink: "#23283B",
+        seal: "#8B2E3F",
       },
       fontFamily: {
         display: ["Fraunces", "serif"],
