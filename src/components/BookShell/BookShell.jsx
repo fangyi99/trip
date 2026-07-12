@@ -2,6 +2,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useLocation, Outlet } from "react-router-dom";
 import TabIndex from "./TabIndex.jsx";
 import Backdrop from "./Backdrop.jsx";
+import logoImg from "../../assets/logo.png";
 import { useMediaQuery } from "../../hooks/useMediaQuery.js";
 
 // Desktop view: floating card + backdrop animation + page-turn transition
@@ -19,9 +20,16 @@ export default function BookShell() {
 
         <div className="relative bg-paper lg:rounded-r-2xl lg:rounded-l-sm lg:shadow-book overflow-hidden flex-1 flex flex-col">
           <header className="bg-cover text-paper px-6 pt-6 pb-4 shrink-0">
-            <h1 className="font-mono text-xl tracking-[0.3em] uppercase text-gold">
-              Wayfarer
-            </h1>
+            <div className="flex items-center gap-3">
+              <img
+                src={logoImg}
+                alt="Trace Logo"
+                className="w-6 h-6 object-contain"
+              />
+              <h1 className="font-mono text-xl tracking-[0.3em] uppercase text-gold">
+                TRACE
+              </h1>
+            </div>
           </header>
 
           <div className="flex-1 flex overflow-hidden">

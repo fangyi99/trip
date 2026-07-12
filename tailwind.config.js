@@ -10,7 +10,7 @@ export default {
         "cover-dark": "#131C33",
         gold: "#B8935A",
         ink: "#23283B",
-        seal: "#8B2E3F",
+        seal: "#8b2e3f",
       },
       fontFamily: {
         display: ["Fraunces", "serif"],
