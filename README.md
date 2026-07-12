@@ -1,6 +1,6 @@
 <p align="justify">
 
-# Trace: Intelligent Routes
+# Trace: Travel Assistant
 
 An elegant, mobile-first web application designed to simplify travel planning. By combining smart accommodation recommendations with AI-driven itinerary generation, it transforms chaotic planning process into a beautiful, cohesive journey.
 
@@ -40,7 +40,7 @@ Before running the project locally, ensure you have the following API keys ready
 ### Installation
 
 1. Clone the repository:
-         git clone https://github.com/fangyi99/trip.git
+         git clone https://github.com/fangyi99/trace-travel-assistant.git
 
 2. Install dependencies:
 
