@@ -9,10 +9,10 @@ export default function BookShell() {
   const isDesktop = useMediaQuery("(min-width: 1024px)");
 
   return (
-    <div className="h-screen overflow-hidden flex items-center justify-center lg:px-6 lg:py-10">
+    <div className="h-screen lg:min-h-screen lg:h-auto overflow-hidden lg:overflow-y-auto flex items-center justify-center lg:px-6 lg:py-10">
       <Backdrop />
 
-      <div className="relative w-full h-full lg:h-[85vh] lg:max-w-[430px] flex flex-col">
+      <div className="relative w-full h-full lg:h-[min(85vh,760px)] lg:min-h-[560px] lg:max-w-[430px] flex flex-col">
         <div className="hidden lg:block absolute -left-2 top-3 bottom-3 w-2 rounded-l-md bg-cover-dark" />
 
         <div className="relative bg-paper lg:rounded-r-2xl lg:rounded-l-sm lg:shadow-book overflow-hidden flex-1 flex flex-col">

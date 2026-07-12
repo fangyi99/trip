@@ -16,7 +16,7 @@ export default function Backdrop() {
       >
         <path
           className="flight-path"
-          d="M 100 600 Q 400 200 920 400"
+          d="M 100 650 Q 400 200 920 400"
           fill="none"
           stroke="#B8935A"
           strokeWidth="2"

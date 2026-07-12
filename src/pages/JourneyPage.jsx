@@ -53,7 +53,7 @@ export default function JourneyPage() {
 
   return (
     <div className="h-full flex flex-col">
-      <div className="flex-1 overflow-y-auto space-y-6 pr-1">
+      <div className="flex-1 overflow-y-auto space-y-6 pr-1 pb-4">
         <section className="relative">
           <label className="block font-mono text-xs uppercase tracking-wider text-ink/60 mb-2">
             Where to?
