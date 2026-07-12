@@ -1,21 +1,35 @@
-Trace
-An elegant, mobile-first web application designed to simplify travel planning. By combining smart accommodation recommendations with AI-driven itinerary generation, it transforms chaotic planning process into a beautifyl, cohesive journey.
-
-Tech Stack
-Frontend
-
 <p align="justify">
 
-# Trace
+# Trace: Intelligent Routes
 
-An elegant, mobile-first web application designed to simplify travel planning. By combining smart accommodation recommendations with AI-driven itinerary generation, it transforms chaotic planning process into a beautifyl, cohesive journey.
+An elegant, mobile-first web application designed to simplify travel planning. By combining smart accommodation recommendations with AI-driven itinerary generation, it transforms chaotic planning process into a beautiful, cohesive journey.
 
-<p align="center">
-<a href="https://ibb.co/rZx9ffD"><img src="https://i.ibb.co/8jrk441/Invoicely.png" alt="Invoicely" border="0"></a>
-</p>
+## Screenshots
+<table width="100%">
+  <tbody>
+    <tr>
+      <td width="1%"><a href="https://ibb.co/wRzGVrQ"><img src="https://i.ibb.co/DHSpLn3N/Screenshot-2026-07-12-175916.png" alt="Step 1: Journey" border="0"></a></td>
+       <td width="1%"><a href="https://ibb.co/kxg8Hsq"><img src="https://i.ibb.co/cc8kLfdS/Screenshot-2026-07-12-175929.png" alt="Step 2: Sites" border="0"></a></td>
+       <td width="1%"><a href="https://ibb.co/41nmX05"><img src="https://i.ibb.co/N6WQGbrv/Screenshot-2026-07-12-175943.png" alt="Step 3: Stay" border="0"></a></td>
+       <td width="1%"><a href="https://ibb.co/2dbXTnp"><img src="https://i.ibb.co/tT8VLyzH/Screenshot-2026-07-12-180031.png" alt="Step 4: Plan" border="0"></a></td>
+    </tr>
+  </tbody>
+</table>
+
+## Features
+* **Tailored Trip Setup:** Input your destination, trip duration, budget, and travel style to establish the backbone of your journey
+* **Custom Point-of-Interest (POI) Pinning:** Search and add must-visit attractions or restaurants dynamically using the Mapbox Search API
+* **Proximity-Based Hotel Discovery:** Automatically pulls the top 3 accommodations around your destination, complete with accurate distance calculations via the Mapbox Distance API
+* **Seamless Booking Redirection:** Direct external links next to each hotel name route users to Google or Booking.com for real-time pricing and instant reservation
+* **Smart Route Architect:** Once an accommodation is locked in, a tailored, location-optimized itinerary is generated based on your selected hotel, budget, and chosen sights
+* **Simple UX:** Seamlessly flip between steps using the interactive right-hand vertical tabs: **Journey**, **Sights**, **Stay**, and **Plan**
+
+## Tech Stack
+- [React](https://react.dev/)
+- [Mapbox](https://www.mapbox.com/)
+- [OpenAI API](https://openai.com/index/openai-api/)
 
 ## Getting Started
-
 ### Prerequisites
 
 Before running the project locally, ensure you have the following API keys ready:
@@ -26,43 +40,22 @@ Before running the project locally, ensure you have the following API keys ready
 ### Installation
 
 1. Clone the repository:
-   `git clone https://github.com/fangyi99/trip.git`
+         git clone https://github.com/fangyi99/trip.git
 
 2. Install dependencies:
-   `npm install`
+
+         npm install
 
 3. Create a .env file in the root directory and add your environment variables:
 
-````REACT_APP_MAPBOX_TOKEN=your_mapbox_token_here
-REACT_APP_AI_API_KEY=your_ai_api_key_here```
+         VITE_MAPBOX_TOKEN=your_mapbox_token_here
+         OPENAI_API_KEY=your_ai_api_key_here
+
+4. Start the development server:
+         npm run dev:full
 
 
-Run the following commands from your terminal:
-1. ```git clone https://github.com/fangyi99/invoice_generator.git``` to clone this repository.
-2. ```flutter pub get``` in the project root directory to install all required dependencies.
-
-## Screenshots
-<table width="100%">
-  <tbody>
-    <tr>
-      <td width="1%"><a href="https://ibb.co/wRzGVrQ"><img src="https://i.ibb.co/jTr0mZw/Home.png" alt="Home" border="0"></a></td>
-       <td width="1%"><a href="https://ibb.co/kxg8Hsq"><img src="https://i.ibb.co/dr02Wwk/Database.png" alt="Database" border="0"></a></td>
-       <td width="1%"><a href="https://ibb.co/41nmX05"><img src="https://i.ibb.co/xFtCBrR/Form.png" alt="Form" border="0"></a></td>
-       <td width="1%"><a href="https://ibb.co/2dbXTnp"><img src="https://i.ibb.co/YhrvxRV/PDF.png" alt="PDF" border="0"></a></td>
-    </tr>
-  </tbody>
-</table>
-
-## Tech Stack
-- [React](https://docs.flutter.dev/)
-- [Mapbox](https://pub.dev/packages/hive)
-- [OpenAI API]()
-
-## References
-- [Hive Tutorial](https://www.youtube.com/watch?v=w8cZKm9s228&t=20s&ab_channel=HeyFlutter)
-- [Create PDF Tutorial](https://www.youtube.com/watch?v=z_5xkhEkc5Y&t=856s&ab_channel=HeyFlutter)
-- [PDF Viewer Tutorial](https://www.youtube.com/watch?v=uizZbJWziEg&t=894s&ab_channel=HeyFlutter)
-- [Share Files Tutorial](https://www.youtube.com/watch?v=-PmUFbbA-Fs&t=0s&ab_channel=HeyFlutter)
+## Credits
+- [LottieFiles](https://lottiefiles.com/free-animation/traveller-h1uvfZOMew)
 
 </p>
-````
