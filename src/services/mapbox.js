@@ -63,8 +63,12 @@ export function isValidCoords(coords) {
  * included wishlist items, each annotated with its distance to every
  * wishlist item individually
  */
+
 export async function findTopHotels(destination, wishlist) {
-  const anchor = centroid([destination, ...wishlist]);
+  const outlierIds = findGeographicOutliers(wishlist);
+  const consistentWishlist = wishlist.filter((w) => !outlierIds.includes(w.id));
+  const anchor =
+    consistentWishlist.length > 0 ? centroid(consistentWishlist) : destination;
 
   const params = new URLSearchParams({
     q: "hotel",
@@ -72,28 +76,45 @@ export async function findTopHotels(destination, wishlist) {
     session_token: getSessionToken(),
     proximity: `${anchor.lng},${anchor.lat}`,
     poi_category: "lodging",
-    limit: "6",
+    limit: "10",
   });
+  if (destination.countryCode) params.set("country", destination.countryCode);
+
+  const box = boundingBox(
+    consistentWishlist.length > 0 ? consistentWishlist : [destination],
+  );
+  if (box) params.set("bbox", box);
+
   const res = await fetch(`${SEARCH_URL}/suggest?${params}`);
   if (!res.ok) throw new Error("Mapbox hotel search failed");
   const data = await res.json();
 
-  const candidates = await Promise.all(
-    (data.suggestions ?? []).slice(0, 6).map(async (s) => {
+  const candidates = [];
+  for (const s of (data.suggestions ?? []).slice(0, 10)) {
+    try {
       const coords = await retrievePlace(s.mapbox_id);
-      return {
+      candidates.push({
         id: s.mapbox_id,
         name: s.name,
         address: s.full_address,
         ...coords,
-      };
-    }),
-  );
+      });
+    } catch (e) {
+      // Some suggestions don't have retrievable geometry - skip that one
+      // hotel rather than aborting the whole search over it.
+      console.warn(`Skipping hotel "${s.name}" - no location data available`);
+    }
+  }
 
-  const withDistances = await attachDistances(wishlist, candidates);
+  const nearby = candidates.filter((c) => haversineKm(anchor, c) <= 30);
+  if (nearby.length === 0) {
+    throw new Error("No hotels found close to your destination");
+  }
 
-  // Rank by average distance across the wishlist, so the top 3 are
-  // genuinely the most convenient overall, not just closest to one spot
+  // Distances shown to the user still cover the FULL wishlist, outliers
+  // included - we only excluded them from anchor/search, not from display.
+  const withDistances = await attachDistances(wishlist, nearby);
+
   return withDistances
     .map((hotel) => ({
       ...hotel,
@@ -101,6 +122,60 @@ export async function findTopHotels(destination, wishlist) {
     }))
     .sort((a, b) => a.avgDistance - b.avgDistance)
     .slice(0, 3);
+}
+
+/**
+ * Returns ids of points whose nearest neighbor is implausibly far away.
+ * Robust to a single bad point in a way centroid-distance isn't - one
+ * outlier can drag a shared center far enough that every *good* point
+ * looks far from it too. Nearest-neighbor distance doesn't have that
+ * problem: a real cluster member always has some other point close by,
+ * an outlier doesn't.
+ */
+export function findGeographicOutliers(points, maxNearestNeighborKm = 50) {
+  if (points.length <= 1) return [];
+
+  return points
+    .filter((p) => {
+      const nearestDistance = Math.min(
+        ...points
+          .filter((other) => other.id !== p.id)
+          .map((other) => haversineKm(p, other)),
+      );
+      return nearestDistance > maxNearestNeighborKm;
+    })
+    .map((p) => p.id);
+}
+
+// Straight-line distance in km - cheap, client-side, no API cost. Used only
+// as a sanity filter, not for the actual displayed distances (those come
+// from the real driving-route Matrix API in attachDistances).
+function haversineKm(a, b) {
+  const R = 6371;
+  const dLat = ((b.lat - a.lat) * Math.PI) / 180;
+  const dLng = ((b.lng - a.lng) * Math.PI) / 180;
+  const lat1 = (a.lat * Math.PI) / 180;
+  const lat2 = (b.lat * Math.PI) / 180;
+
+  const h =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLng / 2) ** 2;
+  return 2 * R * Math.asin(Math.sqrt(h));
+}
+
+function boundingBox(points, paddingDegrees = 0.05) {
+  const valid = points.filter(Boolean);
+  if (valid.length === 0) return null;
+
+  const lngs = valid.map((p) => p.lng);
+  const lats = valid.map((p) => p.lat);
+
+  const minLng = Math.min(...lngs) - paddingDegrees;
+  const maxLng = Math.max(...lngs) + paddingDegrees;
+  const minLat = Math.min(...lats) - paddingDegrees;
+  const maxLat = Math.max(...lats) + paddingDegrees;
+
+  return `${minLng},${minLat},${maxLng},${maxLat}`;
 }
 
 async function attachDistances(wishlist, hotels) {

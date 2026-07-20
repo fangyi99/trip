@@ -5,6 +5,7 @@ import {
   searchPlaces,
   retrievePlace,
   isValidCoords,
+  findGeographicOutliers,
 } from "../services/mapbox.js";
 
 // Step 2: Build wishlist of attractions/restuarants, scoped to
@@ -61,6 +62,10 @@ export default function SightsPage() {
     return <EmptyState onBack={() => navigate("/journey")} />;
   }
 
+  const outlierIds = findGeographicOutliers(
+    trip.wishlist.filter((i) => i.included),
+  );
+
   return (
     <div className="h-full flex flex-col">
       <div className="flex-1 overflow-y-auto space-y-6 pr-1">
@@ -104,31 +109,45 @@ export default function SightsPage() {
             </p>
           ) : (
             <ul className="space-y-2">
-              {trip.wishlist.map((item) => (
-                <li
-                  key={item.id}
-                  className="flex items-center gap-3 bg-white/70 border border-ink/10 rounded-lg px-4 py-2.5"
-                >
-                  <input
-                    type="checkbox"
-                    checked={item.included}
-                    onChange={() => toggleWishlistItem(item.id)}
-                    className="w-4 h-4 accent-cover shrink-0"
-                  />
-                  <div
-                    className={`flex-1 ${item.included ? "" : "opacity-40"}`}
+              {trip.wishlist.map((item) => {
+                const isOutlier = item.included && outlierIds.includes(item.id);
+                return (
+                  <li
+                    key={item.id}
+                    className={[
+                      "flex items-center gap-3 border rounded-lg px-4 py-2.5",
+                      isOutlier
+                        ? "bg-seal/5 border-seal/40"
+                        : "bg-white/70 border-ink/10",
+                    ].join(" ")}
                   >
-                    <p className="font-medium text-sm">{item.name}</p>
-                    <p className="text-xs text-ink/50">{item.category}</p>
-                  </div>
-                  <button
-                    onClick={() => removeWishlistItem(item.id)}
-                    className="text-seal text-xs font-mono uppercase tracking-wide hover:underline shrink-0"
-                  >
-                    Remove
-                  </button>
-                </li>
-              ))}
+                    <input
+                      type="checkbox"
+                      checked={item.included}
+                      onChange={() => toggleWishlistItem(item.id)}
+                      className="w-4 h-4 accent-cover shrink-0"
+                    />
+                    <div
+                      className={`flex-1 ${item.included ? "" : "opacity-40"}`}
+                    >
+                      <p className="font-medium text-sm">{item.name}</p>
+                      <p className="text-xs text-ink/50">{item.category}</p>
+                      {isOutlier && (
+                        <p className="text-xs text-seal mt-0.5">
+                          This looks far from your other places — double check
+                          it's the right one.
+                        </p>
+                      )}
+                    </div>
+                    <button
+                      onClick={() => removeWishlistItem(item.id)}
+                      className="text-seal text-xs font-mono uppercase tracking-wide hover:underline shrink-0"
+                    >
+                      Remove
+                    </button>
+                  </li>
+                );
+              })}
             </ul>
           )}
         </section>

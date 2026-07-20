@@ -37,18 +37,24 @@ export function TripProvider({ children }) {
       wishlist: [...prev.wishlist, { ...item, included: true }],
     }));
 
-  const removeWishlistItem = (id) =>
-    setTrip((prev) => ({
-      ...prev,
-      wishlist: prev.wishlist.filter((item) => item.id !== id),
-    }));
-
   const toggleWishlistItem = (id) =>
     setTrip((prev) => ({
       ...prev,
       wishlist: prev.wishlist.map((item) =>
         item.id === id ? { ...item, included: !item.included } : item,
       ),
+      // hotel results were ranked against the old wishlist - invalidate them
+      // rather than leaving a stale "top 3" the user never re-confirmed
+      hotels: [],
+      selectedHotel: null,
+    }));
+
+  const removeWishlistItem = (id) =>
+    setTrip((prev) => ({
+      ...prev,
+      wishlist: prev.wishlist.filter((item) => item.id !== id),
+      hotels: [],
+      selectedHotel: null,
     }));
 
   const resetTrip = () => setTrip(emptyTrip);

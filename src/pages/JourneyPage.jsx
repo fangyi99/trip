@@ -40,6 +40,13 @@ export default function JourneyPage() {
           countryCode: suggestion.countryCode,
           ...coords,
         },
+        // changing destination invalidates everything scoped to the old
+        // country - wishlist places, hotel search results, and any
+        // generated itinerary are all meaningless once the country changes
+        wishlist: [],
+        hotels: [],
+        selectedHotel: null,
+        itinerary: null,
       });
       setQuery(suggestion.name);
       setSuggestions([]);
